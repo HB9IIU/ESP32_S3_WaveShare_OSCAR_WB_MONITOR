@@ -4,6 +4,16 @@ Real-time wideband spectrum analyzer and community chat viewer for the **QO-100 
 
 Connects simultaneously to the BATC wideband FFT stream and the BATC chat server. Both streams run in the background — switching between pages never drops the connections.
 
+## Screenshots
+
+| Spectrum with waterfall | Weather page |
+|---|---|
+| ![Spectrum page with waterfall](Doc/readme/spectrum-waterfall.png) | ![Weather page](Doc/readme/weather-page.png) |
+
+| Compact spectrum | Live chat |
+|---|---|
+| ![Spectrum page with waterfall hidden](Doc/readme/spectrum-compact.png) | ![Chat page](Doc/readme/chat-page.png) |
+
 > ### Flash firmware directly from your browser
 > **[https://hb9iiu.github.io/ESP32_S3_WaveShare_OSCAR_WB_MONITOR/](https://hb9iiu.github.io/ESP32_S3_WaveShare_OSCAR_WB_MONITOR/)**
 > No IDE required — Chrome or Edge only.
@@ -66,7 +76,6 @@ Open the flash page in Chrome or Edge, connect the board via USB, and click Inst
 This flashes bootloader, partition table, firmware, and LittleFS in one step. Firefox is not supported (requires Web Serial API).
 
 ### Option 2 — PlatformIO
-
 ```bash
 # Firmware
 pio run -e DISPLAY -t upload
@@ -91,7 +100,8 @@ To reset all settings (WiFi + location): touch and hold the screen for 3 seconds
 
 ### Spectrum page (default)
 
-```
+![Spectrum page with waterfall visible](Doc/readme/spectrum-waterfall.png)
+```raw
 ┌─────────────────────────────────────────────┐
 │ < CHAT        WATER FALL        WEATHER >   │  36 px  nav bar
 ├─────────────────────────────────────────────┤
@@ -116,7 +126,8 @@ To reset all settings (WiFi + location): touch and hold the screen for 3 seconds
 
 ### Chat page
 
-```
+![Chat page with user list](Doc/readme/chat-page.png)
+```raw
 ┌───────────────────────────────┬─────────────┐
 │  14:32  HB9IIU  Hello world!  │  USERS      │
 │  14:33  DL3YYZ  73 all        │  HB9IIU     │
@@ -129,6 +140,8 @@ To reset all settings (WiFi + location): touch and hold the screen for 3 seconds
 Swipe up/down to scroll message history. The thin bar on the right edge shows scroll position.
 
 ### Weather page
+
+![Weather page with hourly and daily forecast](Doc/readme/weather-page.png)
 
 Full-screen weather display. Tap anywhere to return to the spectrum page.
 
@@ -174,7 +187,7 @@ All libraries are in `lib/` and are committed to the repository. No `pio pkg ins
 
 ## Project structure
 
-```
+```raw
 ├── platformio.ini          — Build configuration (env: DISPLAY)
 ├── partitions.csv          — 16 MB custom partition table
 ├── gen_font.py             — TTF → LVGL .c font converter
