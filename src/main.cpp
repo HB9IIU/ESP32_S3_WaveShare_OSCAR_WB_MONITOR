@@ -27,12 +27,22 @@
 #include "boot_manager.h"
 #include "spectrum_display.h"
 #include "chat_display.h"
+#include "lv_driver.h"
+#include "weatherData.h"
+#include "weatherFetch.h"
+#include "weather_page.h"
 
 LGFX tft;
 
 // ── Page ──────────────────────────────────────────────────────────────────────
-enum class Page : uint8_t { SPECTRUM, CHAT };
+enum class Page : uint8_t { SPECTRUM, CHAT, WEATHER };
 static Page _page = Page::SPECTRUM;
+static bool _redraw_spectrum = false;
+
+static void _weather_close_cb() {
+    _page = Page::SPECTRUM;
+    _redraw_spectrum = true;  // defer: LVGL still flushes dirty regions after this returns
+}
 
 // ── FFT WebSocket ─────────────────────────────────────────────────────────────
 static WebSocketsClient ws;
@@ -168,13 +178,34 @@ void setup() {
 
     initTFT();
 
+    Serial.println("[fs] Mounting LittleFS...");
     if (LittleFS.begin(false, "/littlefs", 10, "littlefs")) {
-        if (LittleFS.exists("/splash.jpg"))
-            tft.drawJpgFile(LittleFS, "/splash.jpg", 0, 0, 800, 480);
-        LittleFS.end();
+        Serial.printf("[fs] Mounted OK — total=%u used=%u\n",
+                      LittleFS.totalBytes(), LittleFS.usedBytes());
+        Serial.println("[fs] Root listing:");
+        File root = LittleFS.open("/");
+        File f = root.openNextFile();
+        while (f) {
+            Serial.printf("[fs]   %s (%u bytes)\n", f.name(), f.size());
+            f = root.openNextFile();
+        }
+        bool splashExists = LittleFS.exists("/splash.jpg");
+        Serial.printf("[fs] /splash.jpg exists: %s\n", splashExists ? "YES" : "NO");
+        if (splashExists) {
+            Serial.println("[fs] Drawing splash...");
+            bool ok = tft.drawJpgFile(LittleFS, "/splash.jpg", 0, 0, 800, 480);
+            Serial.printf("[fs] drawJpgFile returned: %s\n", ok ? "true" : "false");
+        }
+        // LittleFS stays mounted for weather backgrounds and icons
+    } else {
+        Serial.println("[fs] LittleFS.begin() FAILED");
     }
 
     BootManager::run();
+
+    lv_init();
+    lvgl_setup();
+    weather_fetch_start();
 
     // Spectrum is the default page — init its sprites and static UI
     SpectrumDisplay::init();
@@ -199,6 +230,22 @@ void setup() {
 void loop() {
     ws.loop();
     wsChat.loop();
+
+    if (_page == Page::WEATHER) {
+        lv_timer_handler();
+        if (_wthr_fetch_ready) {
+            _wthr_fetch_ready = false;
+            weather_page_update_data(_wthr_fetch_data);
+        }
+    }
+
+    // Deferred: redraw spectrum after lv_timer_handler() fully returns
+    // (LVGL flushes dirty regions after the close callback, which would
+    // overwrite SpectrumDisplay::redraw() if called directly from the callback)
+    if (_redraw_spectrum) {
+        _redraw_spectrum = false;
+        SpectrumDisplay::redraw();
+    }
 
     // Chat reconnect after SID expiry.  fetchSid() blocks ~3-6 s (3 HTTPS calls);
     // FFT misses frames during this window but recovers on the next packet.
@@ -243,11 +290,12 @@ void loop() {
     if (touched && !lastTouch) {
 
         if (_page == Page::SPECTRUM) {
-            if (tx < 80 && ty > 450)                              // bandplan far-left → CHAT
-                { _page = Page::CHAT; ChatDisplay::init(); }
-            else if (tx > 650 && ty > 430)                        // bandplan far-right → toggle WF
-                SpectrumDisplay::toggleWaterfall();
-            else if (tx >= 44 && tx <= 220 && ty >= 25 && ty < 336) // beacon area → cycle color
+            if (ty >= 25 && ty < 61) {                            // nav button strip
+                if      (tx < 267)  { _page = Page::CHAT; ChatDisplay::init(); }
+                else if (tx < 534)  { _page = Page::WEATHER; weather_page_open(_weather_close_cb); }
+                else                  SpectrumDisplay::toggleWaterfall();
+            }
+            else if (tx >= 44 && tx <= 220 && ty >= 61 && ty < 336) // beacon area → cycle color
                 SpectrumDisplay::cycleSpectrumColor();
             else if (ty >= 336 && ty < 436) {                     // waterfall row → brightness
                 if      (tx < 400) SpectrumDisplay::adjustWfBrightness(-10);

@@ -10,15 +10,17 @@ namespace SpectrumDisplay {
 
 // ── Layout (800 × 480) ────────────────────────────────────────────────────────
 //   0..24   (25px)  Frequency axis
-//   25..334 (310px) Spectrum plot
+//   25..60  (36px)  Nav buttons (CHAT / WEATHER / WF)
+//   61..334 (274px) Spectrum plot
 //   335     (1px)   Separator
 //   336..435(100px) Waterfall
 //   436..479(44px)  Bandplan
 static constexpr int FA_TOP   = 0,   FA_H   = 25;
+static constexpr int BTN_TOP  = 25,  BTN_H  = 36;
 static constexpr int PL_LEFT  = 44,  PL_W   = 756;   // left margin for dB labels
-static constexpr int PL_TOP   = 25;
+static constexpr int PL_TOP   = 61;
 static int           PL_BOT   = 334;   // mutable — changes when waterfall is toggled
-static int           PL_H     = 310;
+static int           PL_H     = 274;
 static constexpr int WF_TOP   = 336, WF_H   = 100;
 static constexpr int BP_TOP   = 436, BP_H   = 44;
 
@@ -172,16 +174,39 @@ static void drawBandplan() {
     tft.setTextColor(c8(80, 200, 120), BG);
     tft.drawString("Narrow DATV", (z3x + z4x) / 2, BP_TOP + 27);
 
-    // WF toggle tap-target indicator — far right
-    tft.setFont(&fonts::DejaVu12);
-    tft.setTextDatum(TR_DATUM);
-    tft.setTextColor(_wfVisible ? c8(0, 200, 100) : c8(80, 80, 80), BG);
-    tft.drawString(_wfVisible ? "WF+" : "WF-", 797, BP_TOP + 27);
+}
 
-    // Chat page button — far left (tap zone: tx<80, ty>450)
+// ── Nav button strip (y=25..60): CHAT | WEATHER | WF ─────────────────────────
+static void drawNavButtons() {
+    constexpr int BW = 800 / 3;   // 266px per button (last button gets the extra 2px)
+    const uint16_t BG  = c8(15, 18, 28);
+    const uint16_t DIV = c8(45, 50, 70);
+    const uint16_t SEP = c8(35, 40, 60);
+
+    tft.fillRect(0, BTN_TOP, 800, BTN_H, BG);
+
+    // Top and bottom separator lines
+    tft.drawFastHLine(0, BTN_TOP,              800, SEP);
+    tft.drawFastHLine(0, BTN_TOP + BTN_H - 1,  800, SEP);
+
+    // Vertical dividers between buttons
+    tft.drawFastVLine(BW,     BTN_TOP + 5, BTN_H - 10, DIV);
+    tft.drawFastVLine(BW * 2, BTN_TOP + 5, BTN_H - 10, DIV);
+
+    tft.setFont(&fonts::DejaVu12);
+    tft.setTextDatum(MC_DATUM);
+    const int CY = BTN_TOP + BTN_H / 2;
+
+    tft.setTextColor(c8(80, 140, 210), BG);
+    tft.drawString("< CHAT", BW / 2, CY);
+
+    tft.setTextColor(c8(80, 190, 110), BG);
+    tft.drawString("WEATHER", BW + BW / 2, CY);
+
+    tft.setTextColor(_wfVisible ? c8(0, 200, 100) : c8(80, 80, 80), BG);
+    tft.drawString(_wfVisible ? "WF+" : "WF-", BW * 2 + BW / 2, CY);
+
     tft.setTextDatum(TL_DATUM);
-    tft.setTextColor(c8(80, 100, 140), BG);
-    tft.drawString("CHAT>", 4, BP_TOP + 27);
 }
 
 // ── Grid (drawn into spectrum sprite) ────────────────────────────────────────
@@ -246,7 +271,7 @@ static float alignSR(float bw) {
 // ── Sprite allocation ─────────────────────────────────────────────────────────
 static void createSprites() {
     // setPsram(true) MUST be called before createSprite — default is false
-    // spec = 756×275×2 = ~416 KB, wf = 756×100×2 = ~148 KB → must live in PSRAM
+    // spec = 756×274×2 = ~415 KB, wf = 756×100×2 = ~148 KB → must live in PSRAM
     _spec = new LGFX_Sprite(&tft);
     _spec->setPsram(true);
     _spec->setColorDepth(16);
@@ -273,6 +298,7 @@ inline void init() {
     tft.fillScreen(TFT_BLACK);
     createSprites();
     drawFreqAxis();
+    drawNavButtons();
     drawDbLabels();
     drawBandplan();
     tft.drawFastHLine(0, PL_BOT + 1, 800, c8(30, 30, 30));
@@ -288,6 +314,7 @@ inline void init() {
 inline void redraw() {
     tft.fillScreen(TFT_BLACK);
     drawFreqAxis();
+    drawNavButtons();
     drawDbLabels();
     drawBandplan();
     tft.drawFastHLine(0, PL_BOT + 1, 800, c8(30, 30, 30));
@@ -462,7 +489,7 @@ inline void toggleWaterfall() {
     tft.fillRect(0, PL_TOP, 800, BP_TOP - PL_TOP, TFT_BLACK);
 
     PL_BOT = _wfVisible ? 334 : 434;
-    PL_H   = _wfVisible ? 310 : 410;
+    PL_H   = _wfVisible ? 274 : 374;
 
     // Rebuild spectrum sprite at new height (PSRAM: max 410×756×2 ≈ 619 KB)
     _spec->deleteSprite();
@@ -472,6 +499,7 @@ inline void toggleWaterfall() {
     _spec->setColorDepth(16);
     _spec->createSprite(PL_W, PL_H);
 
+    drawNavButtons();
     drawDbLabels();
     tft.drawFastHLine(0, PL_BOT + 1, 800, c8(30, 30, 30));
     if (_wfVisible) { _wf->pushSprite(PL_LEFT, WF_TOP); _wfMark->pushSprite(14, WF_TOP); drawWfBrightnessBar(); }
