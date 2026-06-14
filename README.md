@@ -29,7 +29,7 @@ Connects simultaneously to the BATC wideband FFT stream and the BATC chat server
 **Weather page**
 - Current conditions, 7-hour and 5-day forecasts from Open-Meteo
 - Dynamic backgrounds (22 day/night variants), weather icons, moon phase
-- Location auto-detected from IP on first boot and cached in flash
+- Location auto-detected from IP on every boot (city name shown on weather page)
 
 **General**
 - WiFi setup UI on first boot (on-screen keyboard, network scan)
@@ -93,12 +93,12 @@ To reset all settings (WiFi + location): touch and hold the screen for 3 seconds
 
 ```
 ┌─────────────────────────────────────────────┐
+│ < CHAT        WATER FALL        WEATHER >   │  36 px  nav bar
+├─────────────────────────────────────────────┤
 │  Frequency axis  10.491 … 10.499 GHz        │  25 px
-├──────────┬──────────────────┬───────────────┤
-│ < CHAT   │   WATER FALL     │   WEATHER >   │  36 px  nav bar
 ├─────────────────────────────────────────────┤
 │                                             │
-│   Live FFT spectrum (dB scale, grid)        │  274 px
+│   Live FFT spectrum (0–12 dB scale, grid)   │  274 px
 │   Signal labels: freq / SR / dB vs beacon   │
 │                                             │
 ├─────────────────────────────────────────────┤
@@ -152,7 +152,7 @@ Full-screen weather display. Tap anywhere to return to the spectrum page.
 | BATC FFT stream   | `wss://eshail.batc.org.uk:443/wb/fft`        | Spectrum data    |
 | BATC chat         | `wss://eshail.batc.org.uk:443/wb/chat/socket.io/` | Chat stream |
 | Open-Meteo        | `https://api.open-meteo.com/v1/forecast`     | Weather          |
-| ip-api.com        | `http://ip-api.com/json/`                    | First-boot geolocation |
+| ip-api.com        | `http://ip-api.com/json/`                    | Geolocation (every boot) |
 
 ---
 
