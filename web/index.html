@@ -5,18 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OSCAR-100 WB Monitor — Flash Firmware</title>
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
     body {
       font-family: sans-serif;
-      max-width: 640px;
+      max-width: 860px;
       margin: 60px auto;
       padding: 0 20px;
       background: #111;
       color: #eee;
     }
     h1 { font-size: 1.4rem; margin-bottom: 0.25em; }
+    h2 { font-size: 1rem; color: #aaa; margin: 2.5em 0 0.8em; letter-spacing: 0.05em; text-transform: uppercase; }
     .meta { font-size: 0.85rem; color: #888; margin-bottom: 2em; }
     p { line-height: 1.6; }
-    .note { font-size: 0.8rem; color: #666; margin-top: 3em; }
+
     .flash-block {
       display: flex;
       flex-direction: column;
@@ -26,6 +28,58 @@
     }
     .board-img { width: 100%; border-radius: 8px; }
     esp-web-install-button { display: block; }
+
+    /* Screenshot gallery */
+    .screenshots {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 0.5em;
+    }
+    .screenshot-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .screenshot-item img {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #333;
+      display: block;
+      cursor: zoom-in;
+      transition: opacity 0.15s;
+    }
+    .screenshot-item img:hover { opacity: 0.85; }
+    .screenshot-item figcaption {
+      font-size: 0.78rem;
+      color: #777;
+      text-align: center;
+    }
+
+    /* Lightbox */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      cursor: zoom-out;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 95vw;
+      max-height: 90vh;
+      border-radius: 6px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.8);
+    }
+
+    .note { font-size: 0.8rem; color: #666; margin-top: 3em; }
+
+    @media (max-width: 560px) {
+      .screenshots { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -53,9 +107,54 @@
     <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
   </div>
 
+  <h2>Screenshots</h2>
+  <div class="screenshots">
+    <figure class="screenshot-item">
+      <img src="screenshots/spectrum-waterfall.jpg"
+           alt="Spectrum page with waterfall — OSCAR-100 wideband transponder"
+           onclick="openLightbox(this.src)" />
+      <figcaption>Spectrum + waterfall</figcaption>
+    </figure>
+    <figure class="screenshot-item">
+      <img src="screenshots/spectrum.jpg"
+           alt="Spectrum page without waterfall"
+           onclick="openLightbox(this.src)" />
+      <figcaption>Spectrum only</figcaption>
+    </figure>
+    <figure class="screenshot-item">
+      <img src="screenshots/chat.jpg"
+           alt="BATC QO-100 wideband chat viewer"
+           onclick="openLightbox(this.src)" />
+      <figcaption>BATC QO-100 chat</figcaption>
+    </figure>
+    <figure class="screenshot-item">
+      <img src="screenshots/weather.jpg"
+           alt="Weather station page"
+           onclick="openLightbox(this.src)" />
+      <figcaption>Weather station</figcaption>
+    </figure>
+  </div>
+
+  <div id="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="" />
+  </div>
+
   <div class="note">
     Source: <a href="https://github.com/HB9IIU/ESP32_S3_WaveShare_OSCAR_WB_MONITOR"
                style="color:#888">HB9IIU/ESP32_S3_WaveShare_OSCAR_WB_MONITOR</a>
   </div>
+
+  <script>
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('open');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
 </body>
 </html>

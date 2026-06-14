@@ -10,6 +10,8 @@
             "includePath": [
                 "/Users/danielstaempfli/AA_Coding/ESP32_Projects/ESP32_S3_WaveShare_OSCAR_WB_MONITOR/include",
                 "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/Preferences/src",
+                "/Users/danielstaempfli/AA_Coding/ESP32_Projects/ESP32_S3_WaveShare_OSCAR_WB_MONITOR/lib/HB9IIU_LvglScreenshot",
+                "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/WebServer/src",
                 "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/ESPmDNS/src",
                 "/Users/danielstaempfli/AA_Coding/ESP32_Projects/ESP32_S3_WaveShare_OSCAR_WB_MONITOR/lib/LovyanGFX/src",
                 "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/Wire/src",
@@ -240,7 +242,6 @@
                 "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/Ticker/src",
                 "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/USB/src",
                 "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/Update/src",
-                "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/WebServer/src",
                 "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/WiFiProv/src",
                 ""
             ],
@@ -249,6 +250,8 @@
                 "path": [
                     "/Users/danielstaempfli/AA_Coding/ESP32_Projects/ESP32_S3_WaveShare_OSCAR_WB_MONITOR/include",
                     "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/Preferences/src",
+                    "/Users/danielstaempfli/AA_Coding/ESP32_Projects/ESP32_S3_WaveShare_OSCAR_WB_MONITOR/lib/HB9IIU_LvglScreenshot",
+                    "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/WebServer/src",
                     "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/ESPmDNS/src",
                     "/Users/danielstaempfli/AA_Coding/ESP32_Projects/ESP32_S3_WaveShare_OSCAR_WB_MONITOR/lib/LovyanGFX/src",
                     "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/Wire/src",
@@ -479,7 +482,6 @@
                     "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/Ticker/src",
                     "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/USB/src",
                     "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/Update/src",
-                    "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/WebServer/src",
                     "/Users/danielstaempfli/.platformio/packages/framework-arduinoespressif32@3.20014.231204/libraries/WiFiProv/src",
                     ""
                 ]

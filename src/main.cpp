@@ -24,6 +24,7 @@
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 #include "HB9IIUdisplayInit.h"
+#include <LvglScreenshot.h>
 #include "boot_manager.h"
 #include "spectrum_display.h"
 #include "chat_display.h"
@@ -33,6 +34,7 @@
 #include "weather_page.h"
 
 LGFX tft;
+static LvglScreenshot screenshot;
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 enum class Page : uint8_t { SPECTRUM, CHAT, WEATHER };
@@ -210,6 +212,17 @@ void setup() {
     // Spectrum is the default page — init its sprites and static UI
     SpectrumDisplay::init();
 
+    // Screenshot server: start after all PSRAM allocations (LVGL bufs + sprites)
+    // and hook into the LVGL flush callback via a function pointer (not a direct
+    // include) to keep WebServer.h out of lv_driver.h / boot_manager.h.
+    if (screenshot.begin(800, 480)) {
+        // Capture on demand from LovyanGFX's PSRAM framebuffer — works for
+        // all rendering paths (LVGL and direct sprite/pushPixels writes).
+        screenshot.setPreServeFn([](uint16_t* buf, uint16_t w, uint16_t h) {
+            tft.readRect(0, 0, w, h, buf);
+        });
+    }
+
     // FFT WebSocket
     ws.beginSSL("eshail.batc.org.uk", 443, "/wb/fft", "", "");
     ws.onEvent(wsEvent);
@@ -230,6 +243,7 @@ void setup() {
 void loop() {
     ws.loop();
     wsChat.loop();
+    screenshot.loop();
 
     if (_page == Page::WEATHER) {
         lv_timer_handler();

@@ -17,6 +17,7 @@
 #include <lvgl.h>
 #include "HB9IIUdisplayInit.h"   // defines LGFX class and extern LGFX tft
 
+
 // ─── Draw buffer ─────────────────────────────────────────────────────────────
 //
 // LVGL renders into a RAM buffer first, then calls lv_flush_cb() to push
