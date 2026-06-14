@@ -28,7 +28,7 @@ static constexpr int BP_TOP   = 436, BP_H   = 44;
 // Adjust to match the actual BATC FFT stream boundaries
 static constexpr float FREQ_START  = 10490.5f;  // MHz, start of displayed span
 static constexpr float FREQ_SPAN   = 9.0f;       // MHz, total displayed span
-static constexpr float DB_RANGE    = 15.0f;      // dB full scale (0..DB_RANGE)
+static constexpr float DB_RANGE    = 12.0f;      // dB full scale (0..DB_RANGE)
 static constexpr int   SUB_ZERO_PX = 20;         // pixels below 0 dB line (sub-zero zone)
 
 // Raw FFT threshold for signal detection

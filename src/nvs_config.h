@@ -46,6 +46,7 @@ struct LocationData {
     float lat;
     float lon;
     char  timezone[64];
+    char  city[64];
     bool  valid;
 };
 
@@ -57,19 +58,21 @@ inline LocationData loadLocation() {
     if (d.valid) {
         d.lat = p.getFloat("lat", 0.0f);
         d.lon = p.getFloat("lon", 0.0f);
-        p.getString("tz", d.timezone, sizeof(d.timezone));
+        p.getString("tz",   d.timezone, sizeof(d.timezone));
+        p.getString("city", d.city,     sizeof(d.city));
     }
     p.end();
     return d;
 }
 
-inline void saveLocation(float lat, float lon, const char* tz) {
+inline void saveLocation(float lat, float lon, const char* tz, const char* city = "") {
     Preferences p;
     p.begin("location", false);
     p.putBool("saved", true);
     p.putFloat("lat", lat);
     p.putFloat("lon", lon);
-    p.putString("tz", tz);
+    p.putString("tz",   tz);
+    p.putString("city", city);
     p.end();
 }
 

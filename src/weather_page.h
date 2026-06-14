@@ -561,23 +561,16 @@ static void weather_page_open(void (*close_ready_cb)())
     lv_obj_set_style_radius(pill, 10, 0);
     lv_obj_clear_flag(pill, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE);
 
-    // City label — derive from timezone (e.g. "Europe/Zurich" → "Zurich")
+    // City label — use actual city name stored by geolocation
     {
         NVSConfig::LocationData _loc = NVSConfig::loadLocation();
-        const char *_city = "";
-        char _city_buf[64] = {};
-        if (_loc.valid && _loc.timezone[0]) {
-            const char *_slash = strrchr(_loc.timezone, '/');
-            strlcpy(_city_buf, _slash ? _slash + 1 : _loc.timezone, sizeof(_city_buf));
-            _city = _city_buf;
-        }
         _wthr_city_lbl = lv_label_create(_wthr_panel);
         lv_obj_set_style_text_font(_wthr_city_lbl, &HB9IIU_JetBrains_Mono_Bold20, 0);
         lv_obj_set_style_text_color(_wthr_city_lbl, lv_color_hex(0xE4F7EA), 0);
         lv_obj_set_style_text_align(_wthr_city_lbl, LV_TEXT_ALIGN_CENTER, 0);
         lv_obj_set_width(_wthr_city_lbl, _WTHR_IMG_W);
         lv_obj_set_pos(_wthr_city_lbl, 0, _WTHR_HDR_H + 8);
-        lv_label_set_text(_wthr_city_lbl, _city[0] ? _city : "---");
+        lv_label_set_text(_wthr_city_lbl, (_loc.valid && _loc.city[0]) ? _loc.city : "---");
     }
 
     _wthr_temp_lbl = lv_label_create(_wthr_panel);

@@ -224,7 +224,7 @@ static bool fetchGeoLocation() {
         return false;
     }
 
-    NVSConfig::saveLocation(lat, lon, tz);
+    NVSConfig::saveLocation(lat, lon, tz, city);
     Serial.println("[geo] Location saved to NVS.");
 
     char msg[80];
@@ -432,23 +432,22 @@ inline void run() {
         rebootIn("No WiFi");
     }
 
-    // ── Step 3: geolocation (first boot only) ─────────────────────────────────
+    // ── Step 3: geolocation (every boot) ─────────────────────────────────────
     NVSConfig::LocationData loc = NVSConfig::loadLocation();
-    Serial.printf("[boot] Location in NVS  : %s\n",
-                  loc.valid ? "FOUND" : "NOT FOUND");
 
-    if (!loc.valid) {
-        Serial.println("[boot] → First boot: fetching geolocation");
-        if (fetchGeoLocation()) {
-            loc = NVSConfig::loadLocation();
-            Serial.printf("[boot] → Location cached: lat=%.4f  lon=%.4f  tz=%s\n",
-                          loc.lat, loc.lon, loc.timezone);
-        } else {
-            Serial.println("[boot] → Geolocation failed — will use UTC");
-        }
-    } else {
-        Serial.printf("[boot] → Cached location: lat=%.4f  lon=%.4f  tz=%s\n",
+    Serial.println("[boot] → Fetching geolocation");
+    if (fetchGeoLocation()) {
+        loc = NVSConfig::loadLocation();
+        Serial.printf("[boot] → Location updated: lat=%.4f  lon=%.4f  tz=%s\n",
                       loc.lat, loc.lon, loc.timezone);
+    } else {
+        Serial.println("[boot] → Geolocation failed — using cached/UTC");
+        if (!loc.valid) {
+            Serial.println("[boot] → No cached location, will use UTC");
+        } else {
+            Serial.printf("[boot] → Falling back to cached: lat=%.4f  lon=%.4f  tz=%s\n",
+                          loc.lat, loc.lon, loc.timezone);
+        }
     }
 
     // ── Step 4: fetch current UTC offset (every boot) ─────────────────────────

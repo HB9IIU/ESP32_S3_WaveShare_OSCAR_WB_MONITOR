@@ -18,6 +18,7 @@
     p { line-height: 1.6; }
     esp-web-install-button { display: block; margin-top: 2em; }
     .note { font-size: 0.8rem; color: #666; margin-top: 3em; }
+    .board-img { width: 100%; border-radius: 8px; margin: 1.5em 0; }
   </style>
 </head>
 <body>
@@ -30,6 +31,8 @@
     Connect the board via USB, then click Install.
   </p>
   <p>Requires <strong>Chrome</strong> or <strong>Edge</strong> (Web Serial API).</p>
+
+  <img src="board.png" alt="OSCAR-100 WB Monitor running on Waveshare ESP32-S3-Touch-LCD-7" class="board-img" />
 
   <script type="module"
     src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module">

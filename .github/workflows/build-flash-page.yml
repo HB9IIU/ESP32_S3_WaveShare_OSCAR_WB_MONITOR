@@ -67,6 +67,10 @@ jobs:
               -e "s/%%BUILD_DATE%%/${BUILD_DATE}/g" \
               web/index.html > deploy/index.html
 
+          # Copy any static assets (images, etc.) from web/
+          find web/ -type f ! -name "*.html" ! -name "*.json" \
+            -exec cp {} deploy/ \;
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
