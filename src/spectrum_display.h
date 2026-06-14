@@ -9,14 +9,14 @@ extern LGFX tft;
 namespace SpectrumDisplay {
 
 // ── Layout (800 × 480) ────────────────────────────────────────────────────────
-//   0..24   (25px)  Frequency axis
-//   25..60  (36px)  Nav buttons (CHAT / WEATHER / WF)
+//   0..35   (36px)  Nav buttons (CHAT / WEATHER / WF)
+//   36..60  (25px)  Frequency axis
 //   61..334 (274px) Spectrum plot
 //   335     (1px)   Separator
 //   336..435(100px) Waterfall
 //   436..479(44px)  Bandplan
-static constexpr int FA_TOP   = 0,   FA_H   = 25;
-static constexpr int BTN_TOP  = 25,  BTN_H  = 36;
+static constexpr int BTN_TOP  = 0,   BTN_H  = 36;
+static constexpr int FA_TOP   = 36,  FA_H   = 25;
 static constexpr int PL_LEFT  = 44,  PL_W   = 756;   // left margin for dB labels
 static constexpr int PL_TOP   = 61;
 static int           PL_BOT   = 334;   // mutable — changes when waterfall is toggled
@@ -203,17 +203,19 @@ static void drawNavButtons() {
     tft.drawFastVLine(BW * 2, BTN_TOP + 5, BTN_H - 10, DIV);
 
     tft.setFont(&fonts::DejaVu12);
-    tft.setTextDatum(MC_DATUM);
     const int CY = BTN_TOP + BTN_H / 2;
 
     tft.setTextColor(c8(80, 140, 210), BG);
-    tft.drawString("< CHAT", BW / 2, CY);
+    tft.setTextDatum(ML_DATUM);
+    tft.drawString("< CHAT", 12, CY);
 
     tft.setTextColor(_wfVisible ? c8(0, 200, 100) : c8(80, 80, 80), BG);
+    tft.setTextDatum(MC_DATUM);
     tft.drawString("WATER FALL", BW + BW / 2, CY);
 
     tft.setTextColor(c8(80, 190, 110), BG);
-    tft.drawString("WEATHER >", BW * 2 + BW / 2, CY);
+    tft.setTextDatum(MR_DATUM);
+    tft.drawString("WEATHER >", 788, CY);
 
     tft.setTextDatum(TL_DATUM);
 }

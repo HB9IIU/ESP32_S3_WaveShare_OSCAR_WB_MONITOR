@@ -4,6 +4,10 @@ Real-time wideband spectrum analyzer and community chat viewer for the **QO-100 
 
 Connects simultaneously to the BATC wideband FFT stream and the BATC chat server. Both streams run in the background — switching between pages never drops the connections.
 
+> ### Flash firmware directly from your browser
+> **[https://hb9iiu.github.io/ESP32_S3_WaveShare_OSCAR_WB_MONITOR/](https://hb9iiu.github.io/ESP32_S3_WaveShare_OSCAR_WB_MONITOR/)**
+> No IDE required — Chrome or Edge only.
+
 ---
 
 ## Features
