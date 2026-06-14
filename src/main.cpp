@@ -292,14 +292,18 @@ void loop() {
         if (_page == Page::SPECTRUM) {
             if (ty >= 25 && ty < 61) {                            // nav button strip
                 if      (tx < 267)  { _page = Page::CHAT; ChatDisplay::init(); }
-                else if (tx < 534)  { _page = Page::WEATHER; weather_page_open(_weather_close_cb); }
-                else                  SpectrumDisplay::toggleWaterfall();
+                else if (tx < 534)  SpectrumDisplay::toggleWaterfall();
+                else                { _page = Page::WEATHER; weather_page_open(_weather_close_cb); }
             }
             else if (tx >= 44 && tx <= 220 && ty >= 61 && ty < 336) // beacon area → cycle color
                 SpectrumDisplay::cycleSpectrumColor();
             else if (ty >= 336 && ty < 436) {                     // waterfall row → brightness
                 if      (tx < 400) SpectrumDisplay::adjustWfBrightness(-10);
                 else if (tx > 400) SpectrumDisplay::adjustWfBrightness(+10);
+            }
+            else if (ty >= 436) {                                  // bandplan corner buttons
+                if      (tx < 60)  SpectrumDisplay::adjustWfBrightness(-10);
+                else if (tx > 740) SpectrumDisplay::adjustWfBrightness(+10);
             }
         }
         else {  // Page::CHAT

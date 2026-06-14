@@ -174,6 +174,15 @@ static void drawBandplan() {
     tft.setTextColor(c8(80, 200, 120), BG);
     tft.drawString("Narrow DATV", (z3x + z4x) / 2, BP_TOP + 27);
 
+    // Waterfall contrast buttons — lower-left (WF-) and lower-right (WF+)
+    const uint16_t WF_DIM = c8(55, 55, 55);
+    tft.setTextDatum(TL_DATUM);
+    tft.setTextColor(_wfOffset < 0 ? c8(220, 140, 40) : WF_DIM, BG);
+    tft.drawString("WF-", 4, BP_TOP + 27);
+    tft.setTextDatum(TR_DATUM);
+    tft.setTextColor(_wfOffset > 0 ? c8(100, 210, 255) : WF_DIM, BG);
+    tft.drawString("WF+", 797, BP_TOP + 27);
+    tft.setTextDatum(TL_DATUM);
 }
 
 // ── Nav button strip (y=25..60): CHAT | WEATHER | WF ─────────────────────────
@@ -200,11 +209,11 @@ static void drawNavButtons() {
     tft.setTextColor(c8(80, 140, 210), BG);
     tft.drawString("< CHAT", BW / 2, CY);
 
-    tft.setTextColor(c8(80, 190, 110), BG);
-    tft.drawString("WEATHER", BW + BW / 2, CY);
-
     tft.setTextColor(_wfVisible ? c8(0, 200, 100) : c8(80, 80, 80), BG);
-    tft.drawString(_wfVisible ? "WF+" : "WF-", BW * 2 + BW / 2, CY);
+    tft.drawString("WATER FALL", BW + BW / 2, CY);
+
+    tft.setTextColor(c8(80, 190, 110), BG);
+    tft.drawString("WEATHER >", BW * 2 + BW / 2, CY);
 
     tft.setTextDatum(TL_DATUM);
 }
@@ -514,6 +523,7 @@ inline void adjustWfBrightness(int delta) {
     if (_wfOffset < -80) _wfOffset = -80;
     if (_wfOffset >  80) _wfOffset =  80;
     drawWfBrightnessBar();
+    drawBandplan();   // refresh WF-/WF+ corner symbol colours
 }
 
 } // namespace SpectrumDisplay

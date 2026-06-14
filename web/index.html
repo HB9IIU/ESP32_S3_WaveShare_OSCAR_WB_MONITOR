@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OSCAR-100 WB Monitor — Flash Firmware</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 640px;
+      margin: 60px auto;
+      padding: 0 20px;
+      background: #111;
+      color: #eee;
+    }
+    h1 { font-size: 1.4rem; margin-bottom: 0.25em; }
+    .meta { font-size: 0.85rem; color: #888; margin-bottom: 2em; }
+    p { line-height: 1.6; }
+    esp-web-install-button { display: block; margin-top: 2em; }
+    .note { font-size: 0.8rem; color: #666; margin-top: 3em; }
+  </style>
+</head>
+<body>
+  <h1>OSCAR-100 WB Monitor</h1>
+  <div class="meta">Version %%VERSION%% &mdash; built %%BUILD_DATE%%</div>
+
+  <p>
+    Flash the latest firmware to your
+    <strong>Waveshare ESP32-S3-Touch-LCD-7</strong> directly from this page.
+    Connect the board via USB, then click Install.
+  </p>
+  <p>Requires <strong>Chrome</strong> or <strong>Edge</strong> (Web Serial API).</p>
+
+  <script type="module"
+    src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module">
+  </script>
+  <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+
+  <div class="note">
+    Source: <a href="https://github.com/HB9IIU/ESP32_S3_WaveShare_OSCAR_WB_MONITOR"
+               style="color:#888">HB9IIU/ESP32_S3_WaveShare_OSCAR_WB_MONITOR</a>
+  </div>
+</body>
+</html>

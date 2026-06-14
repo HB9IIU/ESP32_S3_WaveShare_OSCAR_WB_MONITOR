@@ -1,0 +1,80 @@
+name: Build & Deploy Flash Page
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages:    write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache PlatformIO
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio
+            ~/.cache/pip
+          key: pio-${{ hashFiles('platformio.ini') }}
+
+      - name: Install PlatformIO
+        run: pip install --upgrade platformio
+
+      - name: Build firmware
+        run: pio run -e DISPLAY
+
+      - name: Build LittleFS
+        run: pio run -e DISPLAY -t buildfs
+
+      - name: Assemble deploy folder
+        run: |
+          VERSION="${GITHUB_SHA::7}"
+          BUILD_DATE="$(date -u '+%Y-%m-%d')"
+
+          mkdir -p deploy/firmware
+
+          cp .pio/build/DISPLAY/bootloader.bin deploy/firmware/bootloader.bin
+          cp .pio/build/DISPLAY/partitions.bin  deploy/firmware/partitions.bin
+          cp .pio/build/DISPLAY/firmware.bin    deploy/firmware/firmware.bin
+          cp .pio/build/DISPLAY/littlefs.bin    deploy/firmware/littlefs.bin
+
+          sed -e "s/%%VERSION%%/${VERSION}/g" \
+              -e "s/%%BUILD_DATE%%/${BUILD_DATE}/g" \
+              web/manifest.json > deploy/manifest.json
+
+          sed -e "s/%%VERSION%%/${VERSION}/g" \
+              -e "s/%%BUILD_DATE%%/${BUILD_DATE}/g" \
+              web/index.html > deploy/index.html
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./deploy
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
