@@ -16,9 +16,16 @@
     h1 { font-size: 1.4rem; margin-bottom: 0.25em; }
     .meta { font-size: 0.85rem; color: #888; margin-bottom: 2em; }
     p { line-height: 1.6; }
-    esp-web-install-button { display: block; margin-top: 2em; }
     .note { font-size: 0.8rem; color: #666; margin-top: 3em; }
-    .board-img { width: 100%; border-radius: 8px; margin: 1.5em 0; }
+    .flash-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2em;
+      margin-top: 1.5em;
+    }
+    .board-img { width: 100%; border-radius: 8px; }
+    esp-web-install-button { display: block; }
   </style>
 </head>
 <body>
@@ -37,12 +44,14 @@
   </p>
   <p>Requires <strong>Chrome</strong> or <strong>Edge</strong> (Web Serial API).</p>
 
-  <img src="board.png" alt="OSCAR-100 WB Monitor running on Waveshare ESP32-S3-Touch-LCD-7" class="board-img" />
-
   <script type="module"
     src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module">
   </script>
-  <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+
+  <div class="flash-block">
+    <img src="board.png" alt="OSCAR-100 WB Monitor running on Waveshare ESP32-S3-Touch-LCD-7" class="board-img" />
+    <esp-web-install-button manifest="manifest.json"></esp-web-install-button>
+  </div>
 
   <div class="note">
     Source: <a href="https://github.com/HB9IIU/ESP32_S3_WaveShare_OSCAR_WB_MONITOR"
